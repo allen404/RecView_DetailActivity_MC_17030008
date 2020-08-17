@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MC_RecView_Detail</string>
+    <string name="title_movie_popular">Movies Popular</string>
+    <string name="rating">Rating: </string>
+</resources>
