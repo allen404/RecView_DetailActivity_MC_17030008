@@ -62,7 +62,6 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         apiClient = APIClient.getInstance();
 
-        setupToolbar();
         initUI();
         getMovieDetails();
 
@@ -70,15 +69,14 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void initUI(){
         backdrop = findViewById(R.id.iv_movie_backdrop);
-        poster = findViewById(R.id.iv_movie_poster);
         title = findViewById(R.id.tv_movie_title);
         releaseDate = findViewById(R.id.tv_movie_release_date);
         overview = findViewById(R.id.tv_movie_overview);
         rating = findViewById(R.id.rtBar_movie_rating);
-        tv_trailers = findViewById(R.id.tv_trailers_label);
+        tv_trailers = findViewById(R.id.tv_trailer_label);
         movieGenre = findViewById(R.id.tv_movie_genre);
         movieTrailers = findViewById(R.id.ll_movie_trailers);
-        reviewsLabel = findViewById(R.id.tv_review_label);
+        reviewsLabel = findViewById(R.id.tv_movie_review_label);
         movieReviews = findViewById(R.id.ll_movie_reviews);
 
 
@@ -99,10 +97,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                     Glide.with(MovieDetailActivity.this)
                             .load("https://image.tmdb.org/t/p/w1280" + result.getBackdropPath())
                             .into(backdrop);
-
-                    Glide.with(MovieDetailActivity.this)
-                            .load("https://image.tmdb.org/t/p/w185" + result.getPosterPath())
-                            .into(poster);
                 }
             }
 

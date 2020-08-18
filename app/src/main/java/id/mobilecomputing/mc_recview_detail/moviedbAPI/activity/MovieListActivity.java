@@ -47,8 +47,6 @@ public class MovieListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_list);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         recyclerView = findViewById(R.id.rc_movie_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
