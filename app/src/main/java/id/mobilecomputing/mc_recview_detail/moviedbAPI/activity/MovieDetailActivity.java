@@ -41,7 +41,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 .into(poster);
 
         Glide.with(getApplicationContext())
-                .load("https://image.tmdb.org/t/p/w1280" + fromMain.getStringExtra("backdrop"))
+                .load("https://image.tmdb.org/t/p/original" + fromMain.getStringExtra("backdrop"))
                 .into(backdrop);
 
     }
