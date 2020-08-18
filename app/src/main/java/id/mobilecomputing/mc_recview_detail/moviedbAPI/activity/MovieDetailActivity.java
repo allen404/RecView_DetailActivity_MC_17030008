@@ -14,7 +14,7 @@ import id.mobilecomputing.mc_recview_detail.R;
 
 public class MovieDetailActivity extends AppCompatActivity {
     ImageView backdrop,poster;
-    TextView title,releaseDate,overview;
+    TextView title,releaseDate,overview,trailers;
     RatingBar rating;
 
     @Override
@@ -28,6 +28,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         releaseDate = findViewById(R.id.tv_movie_release_date);
         overview = findViewById(R.id.tv_movie_overview);
         rating = findViewById(R.id.rtBar_movie_rating);
+        trailers = findViewById(R.id.tv_trailers_label);
 
         Intent fromMain = getIntent();
 

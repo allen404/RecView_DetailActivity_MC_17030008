@@ -5,7 +5,7 @@ import java.util.List;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.Result;
 
 public interface OnGetMoviesCallback {
-    void onSuccess(List<Result> movies);
+    void onSuccess(int pages, List<Result> movies);
 
     void onError();
 }
