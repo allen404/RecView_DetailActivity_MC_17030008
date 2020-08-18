@@ -87,7 +87,7 @@ public class MoviesPopularAdapter extends RecyclerView.Adapter<MoviesPopularAdap
 
         public void bind(Result result) {
             this.result = result;
-            String sRating = "Rating: " + String.valueOf(result.getVoteAverage());
+            String sRating = "Rating: " + result.getVoteAverage();
 
             Glide.with(itemView).load("https://image.tmdb.org/t/p/w185/" + result
                     .getPosterPath())

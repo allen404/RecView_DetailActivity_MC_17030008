@@ -1,11 +1,5 @@
 package id.mobilecomputing.mc_recview_detail.moviedbAPI.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,21 +8,22 @@ import android.view.MenuItem;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 import id.mobilecomputing.mc_recview_detail.R;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.adapter.MoviesPopularAdapter;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.Genre;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.Result;
-import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.MoviesPopularResponse;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.APIClient;
-import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.APIInterface;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.OnGetGenresCallback;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.OnGetMoviesCallback;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.OnMoviesClickCallback;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MovieListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
