@@ -4,6 +4,7 @@ import id.mobilecomputing.mc_recview_detail.BuildConfig;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.GenresResponse;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.MoviesPopularResponse;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.Result;
+import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.ReviewResponse;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.TrailerResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -104,19 +105,19 @@ public class APIClient {
                 });
     }
 
-    public void getTrailers(int movieId, final OnGetTrailersCallback callback){
+    public void getTrailers(int movieId, final OnGetTrailersCallback callback) {
         api.getTrailers(movieId, API_KEY, LANGUAGE)
                 .enqueue(new Callback<TrailerResponse>() {
                     @Override
                     public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             TrailerResponse trailerResponse = response.body();
-                            if(trailerResponse != null && trailerResponse.getTrailers() != null){
+                            if (trailerResponse != null && trailerResponse.getTrailers() != null) {
                                 callback.onSuccess(trailerResponse.getTrailers());
-                            }else{
+                            } else {
                                 callback.onError();
                             }
-                        }else{
+                        } else {
                             callback.onError();
                         }
                     }
@@ -135,7 +136,7 @@ public class APIClient {
                     public void onResponse(Call<Result> call, Response<Result> response) {
                         if (response.isSuccessful()) {
                             Result result = response.body();
-                            if (response != null) {
+                            if (result != null) {
                                 callback.onSuccess(result);
                             } else {
                                 callback.onError();
@@ -147,6 +148,31 @@ public class APIClient {
 
                     @Override
                     public void onFailure(Call<Result> call, Throwable t) {
+                        callback.onError();
+                    }
+                });
+    }
+
+    public void getReviews(int movieId, final OnGetReviewsCallback callback){
+        api.getReviews(movieId, API_KEY, LANGUAGE)
+                .enqueue(new Callback<ReviewResponse>() {
+                    @Override
+                    public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
+                        if(response.isSuccessful()){
+                            ReviewResponse reviewResponse = response.body();
+                            if(reviewResponse != null && reviewResponse.getReviews() != null){
+                                callback.onSuccess(reviewResponse.getReviews());
+                            }else{
+                                callback.onError();
+                            }
+                        }else
+                        {
+                            callback.onError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReviewResponse> call, Throwable t) {
                         callback.onError();
                     }
                 });

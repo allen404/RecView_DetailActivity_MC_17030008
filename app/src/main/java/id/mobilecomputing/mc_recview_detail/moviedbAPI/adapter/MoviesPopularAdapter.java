@@ -37,9 +37,9 @@ public class MoviesPopularAdapter extends RecyclerView.Adapter<MoviesPopularAdap
     private OnMoviesClickCallback callback;
 
     public MoviesPopularAdapter(List<Result> result, List<Genre> allGenres, OnMoviesClickCallback callback) {
+        this.callback = callback;
         this.result = result;
         this.allGenres = allGenres;
-        this.callback = callback;
     }
 
 
@@ -54,24 +54,7 @@ public class MoviesPopularAdapter extends RecyclerView.Adapter<MoviesPopularAdap
     public void onBindViewHolder(@NonNull MoviesPopularAdapter.MoviesPopularViewHolder holder, final int position) {
 
         holder.bind(result.get(position));
-
-        holder.container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent toDetail = new Intent(v.getContext(), MovieDetailActivity.class);
-
-                toDetail.putExtra("judul", result.get(position).getOriginalTitle());
-                toDetail.putExtra("backdrop", result.get(position).getBackdropPath());
-                toDetail.putExtra("overview", result.get(position).getOverview());
-                toDetail.putExtra("release", result.get(position).getReleaseDate());
-                toDetail.putExtra("poster",result.get(position).getPosterPath());
-                toDetail.putExtra("rating",String.valueOf(result.get(position).getVoteAverage()/2));
-                v.getContext().startActivity(toDetail);
             }
-        });
-
-
-    }
 
     @Override
     public int getItemCount() {
