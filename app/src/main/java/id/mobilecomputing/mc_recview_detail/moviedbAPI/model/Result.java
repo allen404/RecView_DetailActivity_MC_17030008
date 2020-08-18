@@ -49,6 +49,9 @@ public class Result {
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
+    @SerializedName("genres")
+    @Expose
+    private List<Genre> genres;
 
     public Float getPopularity() {
         return popularity;
@@ -162,6 +165,13 @@ public class Result {
         this.releaseDate = releaseDate;
     }
 
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
 
 
 }

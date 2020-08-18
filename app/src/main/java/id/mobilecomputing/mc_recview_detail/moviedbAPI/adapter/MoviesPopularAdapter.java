@@ -3,12 +3,11 @@ package id.mobilecomputing.mc_recview_detail.moviedbAPI.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,71 +16,56 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import id.mobilecomputing.mc_recview_detail.R;
+
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.activity.MovieDetailActivity;
+import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.Genre;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.Result;
+import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.OnMoviesClickCallback;
 
 public class MoviesPopularAdapter extends RecyclerView.Adapter<MoviesPopularAdapter.MoviesPopularViewHolder> {
-    private List<Result> results;
+    private List<Result> result;
+    private List<Genre> allGenres;
+
     private int columnItem;
     private Context context;
 
-    public MoviesPopularAdapter(List<Result> results, int columnItem, Context context) {
-        this.results = results;
-        this.columnItem = columnItem;
-        this.context = context;
+    private OnMoviesClickCallback callback;
+
+    public MoviesPopularAdapter(List<Result> result, List<Genre> allGenres, OnMoviesClickCallback callback) {
+        this.callback = callback;
+        this.result = result;
+        this.allGenres = allGenres;
     }
 
 
     @NonNull
     @Override
     public MoviesPopularAdapter.MoviesPopularViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(columnItem, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_movie_list,parent,false);
         return new MoviesPopularViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MoviesPopularAdapter.MoviesPopularViewHolder holder, final int position) {
-        String sRating = "Rating: " + String.valueOf(results.get(position).getVoteAverage());
 
-        Glide.with(context).load("https://image.tmdb.org/t/p/w185/" + results
-                .get(position)
-                .getPosterPath())
-                .into(holder.ivPoster);
-        holder.tvTitle.setText(results.get(position).getTitle());
-        holder.tvReleaseDate.setText(results.get(position).getReleaseDate());
-        holder.tvRating.setText(sRating);
-
-        holder.container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent toDetail = new Intent(v.getContext(), MovieDetailActivity.class);
-
-                toDetail.putExtra("judul", results.get(position).getOriginalTitle());
-                toDetail.putExtra("backdrop", results.get(position).getBackdropPath());
-                toDetail.putExtra("overview", results.get(position).getOverview());
-                toDetail.putExtra("release", results.get(position).getReleaseDate());
-                toDetail.putExtra("poster",results.get(position).getPosterPath());
-                toDetail.putExtra("rating",String.valueOf(results.get(position).getVoteAverage()/2));
-                v.getContext().startActivity(toDetail);
+        holder.bind(result.get(position));
             }
-        });
-
-
-    }
 
     @Override
     public int getItemCount() {
-        return results.size();
+        return result.size();
     }
 
-    public static class MoviesPopularViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvSummary, tvReleaseDate, tvRating;
+     class MoviesPopularViewHolder extends RecyclerView.ViewHolder {
+        TextView tvTitle, tvGenre, tvReleaseDate, tvRating;
         ImageView ivPoster;
         CardView container;
+        Result result;
 
 
         public MoviesPopularViewHolder(@NonNull View itemView) {
@@ -90,7 +74,51 @@ public class MoviesPopularAdapter extends RecyclerView.Adapter<MoviesPopularAdap
             tvTitle = itemView.findViewById(R.id.tv_movie_title);
             tvReleaseDate = itemView.findViewById(R.id.tv_movie_release_date);
             tvRating = itemView.findViewById(R.id.tv_movie_rating);
+            tvGenre = itemView.findViewById(R.id.tv_movie_genre);
             container = itemView.findViewById(R.id.cv_container);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    callback.onClick(result);
+                }
+            });
         }
+
+        public void bind(Result result) {
+            this.result = result;
+            String sRating = "Rating: " + String.valueOf(result.getVoteAverage());
+
+            Glide.with(itemView).load("https://image.tmdb.org/t/p/w185/" + result
+                    .getPosterPath())
+                    .into(ivPoster);
+            tvTitle.setText(result.getTitle());
+            tvReleaseDate.setText(result.getReleaseDate());
+            tvRating.setText(sRating);
+            tvGenre.setText(getGenres(result.getGenreIds()));
+        }
+
+        private String getGenres(List<Integer> genreIds) {
+            List<String> movieGenres = new ArrayList<>();
+            for (Integer genreId : genreIds) {
+                for (Genre genre : allGenres) {
+                    if (genre.getId() == genreId) {
+                        movieGenres.add(genre.getName());
+                        break;
+                    }
+                }
+            }
+            return TextUtils.join(", ", movieGenres);
+        }
+    }
+
+    public void appendMovies(List<Result> moviesToAppend){
+        result.addAll(moviesToAppend);
+        notifyDataSetChanged();
+    }
+
+    public void clearMovies(){
+        result.clear();
+        notifyDataSetChanged();
     }
 }
