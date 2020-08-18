@@ -127,4 +127,28 @@ public class APIClient {
                     }
                 });
     }
+
+    public void getMovie(int movieId, final OnGetMovieCallback callback) {
+        api.getMovie(movieId, API_KEY, LANGUAGE)
+                .enqueue(new Callback<Result>() {
+                    @Override
+                    public void onResponse(Call<Result> call, Response<Result> response) {
+                        if (response.isSuccessful()) {
+                            Result result = response.body();
+                            if (response != null) {
+                                callback.onSuccess(result);
+                            } else {
+                                callback.onError();
+                            }
+                        } else {
+                            callback.onError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Result> call, Throwable t) {
+                        callback.onError();
+                    }
+                });
+    }
 }

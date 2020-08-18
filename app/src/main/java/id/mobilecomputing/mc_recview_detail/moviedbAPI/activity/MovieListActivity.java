@@ -2,9 +2,11 @@ package id.mobilecomputing.mc_recview_detail.moviedbAPI.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +25,7 @@ import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.APIClient;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.APIInterface;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.OnGetGenresCallback;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.OnGetMoviesCallback;
+import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.OnMoviesClickCallback;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,7 +33,8 @@ import retrofit2.Response;
 public class MovieListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MoviesPopularAdapter adapter;
-    private final static String API_KEY ="8333f84b3a68a2aef2d8badd07e79d30";
+    private final static String API_KEY = "8333f84b3a68a2aef2d8badd07e79d30";
+    public static String MOVIE_ID = "movie_id";
     private APIClient apiClient;
     private List<Genre> movieGenres;
     private boolean isFetchingMovies;
@@ -41,6 +45,9 @@ public class MovieListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         recyclerView = findViewById(R.id.rc_movie_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -54,14 +61,14 @@ public class MovieListActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu_movies,menu);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_movies, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.sort:
                 showSortMenu();
                 return true;
@@ -70,14 +77,14 @@ public class MovieListActivity extends AppCompatActivity {
         }
     }
 
-    private void showSortMenu(){
+    private void showSortMenu() {
         PopupMenu sortMenu = new PopupMenu(this, findViewById(R.id.sort));
         sortMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 currentPage = 1;
 
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.popular:
                         sortBy = APIClient.POPULAR;
                         getMovies(currentPage);
@@ -109,8 +116,8 @@ public class MovieListActivity extends AppCompatActivity {
                 int visibleItemCount = manager.getChildCount();
                 int firstVisibleItem = manager.findFirstVisibleItemPosition();
 
-                if (firstVisibleItem + visibleItemCount >= totalItemCount / 2){
-                    if(!isFetchingMovies){
+                if (firstVisibleItem + visibleItemCount >= totalItemCount / 2) {
+                    if (!isFetchingMovies) {
                         getMovies(currentPage + 1);
                     }
                 }
@@ -134,24 +141,24 @@ public class MovieListActivity extends AppCompatActivity {
     }
 
 
-
     private void getMovies(int page) {
         isFetchingMovies = true;
         apiClient.getMovies(page, sortBy, new OnGetMoviesCallback() {
             @Override
             public void onSuccess(int page, List<Result> movies) {
                 Log.d("APIClient", "Current Page = " + page);
-                if (adapter == null){
-                    adapter = new MoviesPopularAdapter(movies, movieGenres);
+                if (adapter == null) {
+                    adapter = new MoviesPopularAdapter(movies, movieGenres, callback);
                     recyclerView.setAdapter(adapter);
-                }else{
-                    if(page == 1){
+                } else {
+                    if (page == 1) {
                         adapter.clearMovies();
                     }
                     adapter.appendMovies(movies);
                 }
                 currentPage = page;
                 isFetchingMovies = false;
+                setTitle();
             }
 
             @Override
@@ -164,4 +171,27 @@ public class MovieListActivity extends AppCompatActivity {
     private void showError() {
         Toast.makeText(this, "Cek koneksi internet anda", Toast.LENGTH_SHORT).show();
     }
+
+    private void setTitle() {
+        switch (sortBy) {
+            case APIClient.POPULAR:
+                setTitle(getString(R.string.popular));
+                break;
+            case APIClient.TOP_RATED:
+                setTitle(getString(R.string.top_rated));
+                break;
+            case APIClient.UPCOMING:
+                setTitle(getString(R.string.upcoming));
+                break;
+        }
+    }
+
+    OnMoviesClickCallback callback = new OnMoviesClickCallback() {
+        @Override
+        public void onClick(Result result) {
+            Intent intent = new Intent(MovieListActivity.this, MovieDetailActivity.class);
+            intent.putExtra(MovieDetailActivity.MOVIE_ID, result.getId());
+            startActivity(intent);
+        }
+    };
 }

@@ -2,6 +2,7 @@ package id.mobilecomputing.mc_recview_detail.moviedbAPI.network;
 
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.GenresResponse;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.MoviesPopularResponse;
+import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.Result;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.TrailerResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -42,6 +43,14 @@ public interface APIInterface {
             @Query("api_key") String apiKey,
             @Query("language") String language,
             @Query("page") int page
+    );
+
+
+    @GET("movie/{movie_id}")
+    Call<Result> getMovie(
+            @Path("movie_id") int id,
+            @Query("api_key") String apiKEy,
+            @Query("language") String language
     );
 
 

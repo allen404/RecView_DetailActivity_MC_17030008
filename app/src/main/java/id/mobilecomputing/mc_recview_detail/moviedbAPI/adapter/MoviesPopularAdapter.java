@@ -25,6 +25,7 @@ import id.mobilecomputing.mc_recview_detail.R;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.activity.MovieDetailActivity;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.Genre;
 import id.mobilecomputing.mc_recview_detail.moviedbAPI.model.Result;
+import id.mobilecomputing.mc_recview_detail.moviedbAPI.network.OnMoviesClickCallback;
 
 public class MoviesPopularAdapter extends RecyclerView.Adapter<MoviesPopularAdapter.MoviesPopularViewHolder> {
     private List<Result> result;
@@ -33,9 +34,12 @@ public class MoviesPopularAdapter extends RecyclerView.Adapter<MoviesPopularAdap
     private int columnItem;
     private Context context;
 
-    public MoviesPopularAdapter(List<Result> result, List<Genre> allGenres) {
+    private OnMoviesClickCallback callback;
+
+    public MoviesPopularAdapter(List<Result> result, List<Genre> allGenres, OnMoviesClickCallback callback) {
         this.result = result;
         this.allGenres = allGenres;
+        this.callback = callback;
     }
 
 
@@ -78,6 +82,7 @@ public class MoviesPopularAdapter extends RecyclerView.Adapter<MoviesPopularAdap
         TextView tvTitle, tvGenre, tvReleaseDate, tvRating;
         ImageView ivPoster;
         CardView container;
+        Result result;
 
 
         public MoviesPopularViewHolder(@NonNull View itemView) {
@@ -88,9 +93,17 @@ public class MoviesPopularAdapter extends RecyclerView.Adapter<MoviesPopularAdap
             tvRating = itemView.findViewById(R.id.tv_movie_rating);
             tvGenre = itemView.findViewById(R.id.tv_movie_genre);
             container = itemView.findViewById(R.id.cv_container);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    callback.onClick(result);
+                }
+            });
         }
 
         public void bind(Result result) {
+            this.result = result;
             String sRating = "Rating: " + String.valueOf(result.getVoteAverage());
 
             Glide.with(itemView).load("https://image.tmdb.org/t/p/w185/" + result
